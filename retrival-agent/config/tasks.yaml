@@ -1,0 +1,39 @@
+retriever_task:
+  description: >
+    The retriever_task searches for content relevant to the user’s query {questions} within a 
+    document search tool. It generates additional, relevant query examples based on the original 
+    query and uses both the original and modified queries to retrieve all possible matches from the document search tool. 
+    only If no documents retrieved from the document tool then only use the web search tool.
+  expected_output: >
+    The output should include:
+      - All retrieved content with full metadata.
+      - Content formats as provided by the document tool, without additional structural formatting.
+  agent: retriever
+
+
+ranker_task:
+  description: >
+    The ranker_task reviews the content retrieved for the user’s query {questions} and verifies its semantic relevance.
+    Ranks each document according to its relevance, ensuring that the output contains the source for every document.
+  expected_output: >
+    The output should consist of:
+      - A list of documents ranked by relevance.
+      - Each document should include its metadata and a brief indication of its relation to the query.
+  agent: ranker
+
+responser_task:
+  description: >
+    The responser_task takes the ranked documents and analyzes them to identify the best structure for presenting the final answer to the user’s query {questions}. 
+    It formats the response based on the identified structure:
+    if metadata contains page number then include it also in sources.
+      - Table: Present as a table.
+      - Form: Present as a form.
+      - Coding: Present in a coding block.
+      - Plain text: Present as bullet points for clear explanation.
+      - Unknown structure: Analyze the pattern and deliver a well-organized final answer.
+    Finally, it lists all sources used during the process.
+  expected_output: >
+    The final output should be:
+      - A structured response (table, form, coding, or bullet points) tailored to the pattern of the ranked content.
+      - The answer must include source citations for all referenced content.
+  agent: responser
