@@ -9,7 +9,7 @@ This system is self-contained, relying exclusively on a **custom document proces
 ## **Features**  
 
 ### **Agent-Based Architecture**  
-AgenticCrew employs a robust four-agent system to streamline document processing and response generation:  
+AgenticCrew employs a robust three-agent system to streamline document processing and response generation:  
 
 - **Agent 1: Query Parser and Retriever**  
   - Analyzes user queries to extract key terms or topics for effective processing and Searches the document database to locate and retrieve relevant files and content.  
@@ -37,4 +37,4 @@ Follow these steps to set up and run AgenticCrew:
 
 ### **1. Clone the Repository**  
 ```bash
-git clone 
+git clone https://github.com/ruban072001/Multiagent-RAG-Projects.git
