@@ -1,4 +1,4 @@
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
 from dotenv import load_dotenv
@@ -6,12 +6,12 @@ load_dotenv()
 
 google_tool = SerperDevTool()
 
-# def llm():
-#     llm = LLM(
-#         model="ollama/deepseek-r1:7b",
-#         base_url="http://localhost:11434"
-#     )
-#     return llm
+def llm():
+    llm = LLM(
+        model="ollama/deepseek-coder:6.7b",
+        base_url="http://localhost:11434"
+    )
+    return llm
 @CrewBase
 class AgenticCrew():
 	"""AgenticCrew crew"""
@@ -28,6 +28,7 @@ class AgenticCrew():
 		return Agent(
 			config=self.agents_config["retriever"],
 			tools=[self.document_tool, google_tool],
+			llm=llm(),
 			verbose = True
 		)
 
@@ -35,6 +36,7 @@ class AgenticCrew():
 	def ranker(self) -> Agent:
 		return Agent(
 			config=self.agents_config["ranker"],
+   llm=llm(),
 			verbose = True
 		)
         
@@ -42,6 +44,7 @@ class AgenticCrew():
 	def responser(self) -> Agent:
 		return Agent(
 			config=self.agents_config["responser"],
+   llm=llm(),
 			verbose = True
 		)
         
@@ -62,7 +65,7 @@ class AgenticCrew():
 	def responser_task(self) -> Task:
 		return Task(
 			config=self.tasks_config["responser_task"],
-		)
+			)
         
 
 

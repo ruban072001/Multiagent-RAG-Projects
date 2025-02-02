@@ -1,0 +1,9 @@
+crewai
+crewai-tools
+dotenv
+pydantic
+langchain
+langchain_community
+langchain_huggingface
+langchain_text_splitters
+streamlit
