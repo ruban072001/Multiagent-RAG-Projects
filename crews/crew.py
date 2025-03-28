@@ -7,7 +7,7 @@ import json
 load_dotenv()
 
 
-file_path = r"C:\Users\Ruban\Downloads\light-return-449919-s1-0fe95f938030.json"
+file_path = r""
 
 # Load the JSON file
 with open(file_path, 'r') as file:
