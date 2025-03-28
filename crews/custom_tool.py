@@ -11,7 +11,7 @@ from langchain_community.document_loaders import (TextLoader, PDFPlumberLoader, 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 load_dotenv()
 
-hug_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key="AIzaSyDJTeB65kMPULSarqFIkiFzNRSBjiyYjL8")
+hug_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key="")
 
 current = os.path.dirname(__file__)
 
