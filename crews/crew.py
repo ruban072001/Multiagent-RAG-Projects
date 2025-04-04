@@ -7,7 +7,7 @@ import json
 load_dotenv()
 
 
-file_path = r""
+file_path = r"C:\Users\Ruban\Downloads\light-return-449919-s1-0fe95f938030.json"
 
 # Load the JSON file
 with open(file_path, 'r') as file:
@@ -19,11 +19,13 @@ vertex_credentials_json = json.dumps(vertex_credentials)
 # Search tool
 google_tool = SerperDevTool()
 
-llm = LLM(
-    model="gemini/gemini-2.0-flash",
-    temperature=0.7,
-    vertex_credentials=vertex_credentials_json
-)
+def llm():
+    llm = LLM(
+        model="gemini/gemini-2.0-flash",
+        temperature=0.7,
+        vertex_credentials=vertex_credentials_json
+    )
+    return llm
 
 @CrewBase
 class AgenticCrew():
@@ -44,8 +46,9 @@ class AgenticCrew():
         return Agent(
             config=self.agents_config["retriever"],
             tools=[self.tool],
+            use_system_prompt=False,
             verbose=True,
-            llm=llm,  # ✅ Ensure correct LLM assignment
+            llm=llm(),  # ✅ Ensure correct LLM assignment
             # max_iter=2
         )
 
@@ -54,7 +57,8 @@ class AgenticCrew():
         return Agent(
             config=self.agents_config["ranker"],
             verbose=True,
-            llm=llm,  # ✅ Ensure correct LLM assignment
+            use_system_prompt=False,
+            llm=llm(),  # ✅ Ensure correct LLM assignment
             # max_iter=2
         )
 
@@ -62,8 +66,9 @@ class AgenticCrew():
     def responser(self) -> Agent:
         return Agent(
             config=self.agents_config["responser"],
+            use_system_prompt=False,
             verbose=True,
-            llm=llm,  # ✅ Ensure correct LLM assignment
+            llm=llm(),  # ✅ Ensure correct LLM assignment
             # max_iter=2
         )
 

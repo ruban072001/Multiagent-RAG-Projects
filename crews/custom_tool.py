@@ -11,7 +11,7 @@ from langchain_community.document_loaders import (TextLoader, PDFPlumberLoader, 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 load_dotenv()
 
-hug_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key="")
+hug_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=os.getenv("GEMINI_API_KEY"))
 
 current = os.path.dirname(__file__)
 
@@ -81,9 +81,9 @@ if __name__ == "__main__":
     tool = documentsearchtool(
         extension='pptx',
         file_path=r"C:\Users\Ruban\Documents\Resolute-AI\User Guide Manual v1.pptx",
-        db_path=os.path.join(current, "VECTOR DB", 'ruban', 'mission-1'),
-        method = "store"
+        db_path=os.path.join(current, "DATABASES", 'students', 'ruban'),
+        method = "r"
     )
-    question = "two roads diverged in wood"
-    result = tool._run(question=question)
+    question = "who is ruban?"
+    result = tool._run(questions=question)
     print(result)

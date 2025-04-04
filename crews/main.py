@@ -3,7 +3,7 @@ import os
 import time
 from dotenv import load_dotenv
 from custom_tool import documentsearchtool
-from crew import AgenticCrew
+from crew import AgenticCrew, llm
 
 # Load environment variables
 load_dotenv()
@@ -64,7 +64,7 @@ with st.sidebar:
         "Select your file(s)", accept_multiple_files=True, type=list(FILE_TYPES.keys())
     )
 
-    if st.button("Process Files") and files:
+    if st.button("Process Files") and files and METHOD == "store":
         
         for idx, file in enumerate(files):
             with st.spinner(f"Processing files...{idx + 1}/{len(files)}"):
@@ -81,7 +81,7 @@ with st.sidebar:
                     FILE_COUNTS[file_ext] += 1  # Update count
 
                     # Process File with documentsearchtool
-                    st.session_state.document_tool = documentsearchtool(
+                    documentsearchtool(
                         extension=file_ext, file_path=file_path, db_path=DB_PATH, method=METHOD
                     )
                 else:
@@ -142,23 +142,43 @@ if prompt:
                 print("google")
                 st.session_state.crew = AgenticCrew(None, False)
                 
-        with st.chat_message("assistant"):
-            message_placeholder = st.empty()
-            full_response = ""
+        inputs = {"questions": prompt}
+        
+        train = False
+        test = False
+        query = True
+        if query:
+            with st.chat_message("assistant"):
+                message_placeholder = st.empty()
+                full_response = ""
 
-            with st.spinner("Thinking..."):
-                inputs = {"questions": prompt}
-                result = st.session_state.crew.crew().kickoff(inputs=inputs)
-                if not result or not result.raw:
-                        st.error("❗️ Empty response received. Please try again or check your inputs.")
-                        st.session_state.chat_history.append({"role": "assistant", "content": "Sorry, I couldn't find an answer. Please rephrase your question."})
-                else:
-                    # Streaming Effect
-                    full_response = ""
-                    for i, line in enumerate(result.raw.split("\n")):
-                        full_response += line + ("\n" if i < len(result.raw.split("\n")) - 1 else "")
-                        message_placeholder.markdown(full_response + "▌")
-                        time.sleep(0.25)
+                with st.spinner("Thinking..."):
 
-                    message_placeholder.markdown(full_response)
-                    st.session_state.chat_history.append({"role": "assistant", "content": result.raw})
+                    result = st.session_state.crew.crew().kickoff(inputs=inputs)
+                    if not result or not result.raw:
+                            st.error("❗️ Empty response received. Please try again or check your inputs.")
+                            st.session_state.chat_history.append({"role": "assistant", "content": "Sorry, I couldn't find an answer. Please rephrase your question."})
+                    else:
+                        # Streaming Effect
+                        full_response = ""
+                        for i, line in enumerate(result.raw.split("\n")):
+                            full_response += line + ("\n" if i < len(result.raw.split("\n")) - 1 else "")
+                            message_placeholder.markdown(full_response + "▌")
+                            time.sleep(0.25)
+
+                        message_placeholder.markdown(full_response)
+                        st.session_state.chat_history.append({"role": "assistant", "content": result.raw})
+        if train:
+            try:
+                with st.spinner("Training Under progress🤖...\n It may take time based on Context size🐢"):
+                    st.session_state.crew.crew().train(n_iterations=1, filename=r"training_data.pkl", inputs=inputs)
+                st.success("Training Completed....\n Feedback Details Updated!!🎉")
+            except Exception as e:
+                st.error(f"Training Corrupted due to {e}")
+        if test:
+            try:
+                with st.spinner("Getting Test Score..."):
+                    st.session_state.crew.crew().test(n_iterations=1, eval_llm=llm(), inputs=inputs)
+                st.success("Successfully got test score in backend...")
+            except Exception as e:
+                st.error(f"Error occured while getting Test score due to {e}")
