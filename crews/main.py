@@ -7,7 +7,6 @@ from crew import AgenticCrew, llm
 
 # Load environment variables
 load_dotenv()
-
 # Streamlit UI
 st.title("Multi-Agent RAG System")
 
